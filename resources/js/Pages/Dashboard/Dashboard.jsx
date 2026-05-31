@@ -15,7 +15,10 @@ import {
     IconButton
 } from "@mui/material";
 import dayjs from "dayjs";
-import { Card, CardContent } from "@/components/ui/card"
+
+// 🌟 Fixed: Used a direct relative path (stepping up 2 folders out of Pages/Dashboard) 
+// to reach Components/ui/Card cleanly, bypassing case-blind alias resolution.
+import { Card, CardContent } from "../../Components/ui/Card"
 
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import PaidIcon from "@mui/icons-material/Paid";
@@ -224,8 +227,6 @@ export default function Dashboard({ data, logo, version, store_name }) {
                 {(auth.user_role == "admin" || auth.user_role == "super-admin") && (
                     <Summaries></Summaries>
                 )}
-
-                {/* <ContactsList /> */}
             </Grid>
 
             <Box sx={{ justifyContent: 'center', alignItems: 'center', position: 'fixed', backgroundColor: '#c9c9c9', bottom: '2px', right: '6px', padding: '10px', paddingRight: 2 }}>
