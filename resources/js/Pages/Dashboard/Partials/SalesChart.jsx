@@ -8,21 +8,21 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../../../Components/ui/Card"
+} from "../@/Components/ui/Card"
 import {
   ChartContainer,
   ChartLegend,
   ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
-} from "../../../Components/ui/chart"
+} from "../@/Components/ui/chart"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../../Components/ui/select"
+} from "../@/Components/ui/select"
 import { usePage } from "@inertiajs/react"
 
 export const description = "An interactive area chart"

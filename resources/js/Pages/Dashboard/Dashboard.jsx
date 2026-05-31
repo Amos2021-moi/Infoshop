@@ -18,7 +18,7 @@ import dayjs from "dayjs";
 
 // 🌟 Fixed: Used a direct relative path (stepping up 2 folders out of Pages/Dashboard) 
 // to reach Components/ui/Card cleanly, bypassing case-blind alias resolution.
-import { Card, CardContent } from "../../Components/ui/Card"
+import { Card, CardContent } from "@/Components/ui/Card"
 
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import PaidIcon from "@mui/icons-material/Paid";
