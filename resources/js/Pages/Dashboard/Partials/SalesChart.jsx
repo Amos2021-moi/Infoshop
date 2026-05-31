@@ -1,27 +1,28 @@
 import * as React from "react"
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
 
+// 🌟 Fixed: Capital C relative paths to match your disk configuration precisely
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "../../../Components/ui/Card"
 import {
   ChartContainer,
   ChartLegend,
   ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
+} from "../../../Components/ui/chart"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "../../../Components/ui/select"
 import { usePage } from "@inertiajs/react"
 
 export const description = "An interactive area chart"
@@ -135,17 +136,11 @@ export function SalesChart() {
                 })
               }}
             />
-            {/* <YAxis
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              tickCount={2}
-            /> */}
             <ChartTooltip
               cursor={false}
               content={
                 <ChartTooltipContent
-                className="bg-white"
+                  className="bg-white"
                   labelFormatter={(value) => {
                     return new Date(value).toLocaleDateString("en-US", {
                       month: "short",
