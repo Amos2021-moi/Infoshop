@@ -37,7 +37,7 @@ use App\Http\Controllers\ChargeController;
 use App\Http\Controllers\SyncController;
 use App\Helpers\PwaHelper;
 
-// Installer routes (must be before auth routes)
+// Installer  (must be before auth )
 require __DIR__ . '/installer.php';
 
 Route::get('/', function () {
@@ -48,7 +48,7 @@ Route::get('/editor', function () {
     return Inertia::render('BlockEditor/Editor');
 });
 
-// PWA Routes (for standalone pos-offline app)
+// PWA  (for standalone pos-offline app)
 Route::get('/manifest.json', function () {
     return response()->json(PwaHelper::getManifestData())
         ->header('Content-Type', 'application/manifest+json');
@@ -65,7 +65,7 @@ Route::get('/pending-sales-receipt/{contact_id}', [SaleController::class, 'pendi
 Route::get('/version', [UpgradeController::class, 'checkVersion']);
 Route::post('/api/application-update', [UpgradeController::class, 'applicationUpdate']);
 
-// V2 Update routes (migration-based)
+// V2 Update  (migration-based)
 Route::post('/api/application-update-v2', [UpgradeController::class, 'applicationUpdateV2']);
 
 // Automated Backup Endpoint for external schedulers
@@ -74,7 +74,7 @@ Route::match(['get', 'post'], '/automation/backup/run', [BackupController::class
     ->middleware('throttle:5,1')
     ->name('automation.backup');
 
-// Unified Sync API endpoints for offline-first InfoPOS app are now defined in routes/api.php
+// Unified Sync API endpoints for offline-first InfoPOS app are now defined in /api.php
 
 // Mobile Sales API - For hybrid loading (Firebase + Laravel)
 Route::post('/api/sales/exclude', [SaleController::class, 'getSalesExcluding'])->name('sales.exclude');
@@ -223,13 +223,13 @@ Route::middleware(['auth'])->group(function () {
         return 'Linked with storage';
     });
 
-    // Maintenance Routes
+    // Maintenance 
     Route::get('/maintenance', [UpgradeController::class, 'showMaintenance'])->name('maintenance.index');
     Route::post('/upload-v2', [UpgradeController::class, 'handleUploadV2'])->name('maintenance.upload');
 Route::get('/update', [UpgradeController::class, 'showUploadForm'])->name('upload.form');
     Route::post('/upload', [UpgradeController::class, 'handleUpload'])->name('upload.handle');
     
-    // Database Management Routes
+    // Database Management 
     Route::get('/api/maintenance/database/tables', [UpgradeController::class, 'getDatabaseTables']);
     Route::get('/api/maintenance/database/migrations', [UpgradeController::class, 'getMigrationStatus']);
     Route::post('/api/maintenance/database/migrate', [UpgradeController::class, 'runMigrations']);
@@ -292,3 +292,24 @@ Route::get('/update', [UpgradeController::class, 'showUploadForm'])->name('uploa
 });
 
 require __DIR__ . '/auth.php';
+
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+
+Route::get('/setup-admin-gate', function () {
+    // Check if the admin already exists so we don't duplicate it
+    $exists = User::where('email', 'admin@infoshop.com')->first();
+    
+    if ($exists) {
+        return "Admin account already exists!";
+    }
+
+    $user = new User();
+    $user->name = "Admin";
+    $user->email = "admin@infoshop.com"; // 🌟 Change this to your preferred email
+    $user->password = Hash::make("AdminSecure2026!"); // 🌟 Change this to a secure password
+    $user->user_role = "super-admin"; 
+    $user->save();
+
+    return "Admin account successfully created! Go to /login to sign in.";
+});
