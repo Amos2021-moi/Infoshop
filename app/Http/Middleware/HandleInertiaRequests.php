@@ -35,8 +35,10 @@ class HandleInertiaRequests extends Middleware
         $permissions = collect();
         if ($request->user()) {
             $user = $request->user();
-            $role = Role::where('name',$user->user_role)->first();
-            $permissions = $role->permissions;
+            $role = Role::where('name', $user->user_role)->first();
+            
+            // 🌟 Safety Net: Use a ternary check to default to an empty collection if the database role is missing!
+            $permissions = $role ? $role->permissions : collect();
         }
 
         try {
