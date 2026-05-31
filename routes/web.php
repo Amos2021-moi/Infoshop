@@ -292,24 +292,3 @@ Route::get('/update', [UpgradeController::class, 'showUploadForm'])->name('uploa
 });
 
 require __DIR__ . '/auth.php';
-
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-
-Route::get('/setup-admin-gate', function () {
-    $exists = User::where('email', 'admin@infoshop.com')->first();
-    
-    if ($exists) {
-        return "Admin account already exists!";
-    }
-
-    $user = new User();
-    $user->name = "Admin";
-    $user->user_name = "admin"; // 🌟 Added this to satisfy the database constraint!
-    $user->email = "admin@infoshop.com"; 
-    $user->password = Hash::make("AdminSecure2026!"); 
-    $user->user_role = "super-admin"; 
-    $user->save();
-
-    return "Admin account successfully created! Go to /login to sign in.";
-});
