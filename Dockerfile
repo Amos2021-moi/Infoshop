@@ -14,8 +14,13 @@ ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
 
-# 3. Enable Apache mod_rewrite for Laravel pretty URLs
+# 3. Enable Apache mod_rewrite and explicitly allow directory overrides
 RUN a2enmod rewrite
+RUN echo '<Directory /var/www/html/public>\n\
+    Options Indexes FollowSymLinks\n\
+    AllowOverride All\n\
+    Require all granted\n\
+</Directory>' >> /etc/apache2/apache2.conf
 
 # 4. Change Apache port from 80 to 10000 for Render compatibility
 RUN sed -i 's/Listen 80/Listen 10000/' /etc/apache2/ports.conf
