@@ -24,6 +24,7 @@ RUN chmod -R 775 storage bootstrap/cache
 # Generate cache
 RUN php artisan config:clear
 
+RUN docker-php-ext-install pdo pdo_mysql pdo_pgsql
 EXPOSE 10000
 
 CMD php artisan serve --host=0.0.0.0 --port=10000
