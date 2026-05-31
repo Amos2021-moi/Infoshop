@@ -8,7 +8,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../@/Components/ui/Card"
+} from "@/Components/ui/Card"
 import {
   ChartContainer,
   ChartLegend,

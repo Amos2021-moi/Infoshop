@@ -5,7 +5,7 @@ import {
     CardDescription,
     CardHeader,
     CardTitle,
-} from "../@/Components/ui/Card" // 🌟 Changed from "card" to "Card" to fix Linux case sensitivity
+} from "@/Components/ui/Card" // 🌟 Changed from "card" to "Card" to fix Linux case sensitivity
 import { ChartLine, Package, PackageCheck, User } from "lucide-react"
 import { usePage } from "@inertiajs/react"
 import { useCurrencyFormatter } from "@/lib/currencyFormatter"
