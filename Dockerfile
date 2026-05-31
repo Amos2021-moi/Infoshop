@@ -1,36 +1,48 @@
-FROM php:8.2-cli
+FROM php:8.2-apache
 
-WORKDIR /var/www
-
-# Install system dependencies (IMPORTANT FIX)
+# 1. Install system dependencies and PostgreSQL development libraries
 RUN apt-get update && apt-get install -y \
-    git \
-    curl \
+    libpq-dev \
+    libpng-dev \
     zip \
     unzip \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    libpq-dev \
-    libzip-dev \
-    && docker-php-ext-configure zip \
-    && docker-php-ext-install pdo pdo_mysql pdo_pgsql zip
+    git \
+    && docker-php-ext-install pdo pdo_pgsql gd
 
-# Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# 2. Configure Apache Document Root to point to Laravel's public folder
+ENV APACHE_DOCUMENT_ROOT /var/www/html/public
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/config-available/*.conf
 
-# Copy project files
+# 3. Enable Apache mod_rewrite for Laravel pretty URLs
+RUN a2enmod rewrite
+
+# 4. Change Apache port from 80 to 10000 for Render compatibility
+RUN sed -i 's/Listen 80/Listen 10000/' /etc/apache2/ports.conf
+RUN sed -i 's/<VirtualHost \*:80>/<VirtualHost \*:10000>/' /etc/apache2/sites-available/000-default.conf
+
+# 5. Set working directory
+WORKDIR /var/www/html
+
+# 6. Copy application code into the container
 COPY . .
 
-# Install PHP dependencies
-RUN composer install --no-interaction --prefer-dist
+# 7. Install Composer (multi-stage copy from official image)
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Permissions
-RUN chmod -R 775 storage bootstrap/cache
+# 8. Run Composer install optimized for production
+ENV COMPOSER_ALLOW_SUPERUSER=1
+RUN composer install --no-interaction --optimize-autoloader --no-dev
 
-# Clear config cache
-RUN php artisan config:clear
+# 9. Set strict permissions for Laravel storage and cache directories
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
+# 10. Expose port 10000
 EXPOSE 10000
 
-CMD php artisan serve --host=0.0.0.0 --port=10000
+# 11. Use an entrypoint script to handle migrations and optimization runtime
+COPY docker-entrypoint.sh /usr/local/bin/run-app
+RUN chmod +x /usr/local/bin/run-app
+
+ENTRYPOINT ["run-app"]
