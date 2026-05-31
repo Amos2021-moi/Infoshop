@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\URL; // 🌟 Added: Import the URL Facade
 use App\Models\Setting;
 
 class AppServiceProvider extends ServiceProvider
@@ -27,6 +28,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // 🌟 Fix Mixed Content: Force HTTPS scheme dynamically on Render (Production)
+        if ($this->app->environment('production') || env('APP_ENV') === 'production') {
+            URL::forceScheme('https');
+        }
+
         Vite::prefetch(concurrency: 3);
 
         // Initialize analytics tracking
