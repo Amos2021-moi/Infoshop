@@ -297,7 +297,6 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 Route::get('/setup-admin-gate', function () {
-    // Check if the admin already exists so we don't duplicate it
     $exists = User::where('email', 'admin@infoshop.com')->first();
     
     if ($exists) {
@@ -306,8 +305,9 @@ Route::get('/setup-admin-gate', function () {
 
     $user = new User();
     $user->name = "Admin";
-    $user->email = "admin@infoshop.com"; // 🌟 Change this to your preferred email
-    $user->password = Hash::make("AdminSecure2026!"); // 🌟 Change this to a secure password
+    $user->user_name = "admin"; // 🌟 Added this to satisfy the database constraint!
+    $user->email = "admin@infoshop.com"; 
+    $user->password = Hash::make("AdminSecure2026!"); 
     $user->user_role = "super-admin"; 
     $user->save();
 
