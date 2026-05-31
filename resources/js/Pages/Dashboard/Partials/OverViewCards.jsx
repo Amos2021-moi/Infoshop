@@ -5,7 +5,7 @@ import {
     CardDescription,
     CardHeader,
     CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/Card" // 🌟 Changed from "card" to "Card" to fix Linux case sensitivity
 import { ChartLine, Package, PackageCheck, User } from "lucide-react"
 import { usePage } from "@inertiajs/react"
 import { useCurrencyFormatter } from "@/lib/currencyFormatter"
@@ -41,9 +41,6 @@ export function OverViewCards() {
                         </CardHeader>
                         <CardContent>
                             <div className='text-2xl font-bold'>{formatCurrency(data.totalValuation)}</div>
-                            {/* <p className='text-muted-foreground text-xs'>
-                        +180.1% from last month
-                    </p> */}
                         </CardContent>
                     </Card>
                     <Card className="bg-green-300 text-green-950 cursor-pointer" onClick={() => window.location.href = route('sales.items.summary')}>
@@ -53,9 +50,6 @@ export function OverViewCards() {
                         </CardHeader>
                         <CardContent>
                             <div className='text-2xl font-bold'>{data.soldItems}</div>
-                            {/* <p className='text-muted-foreground text-xs'>
-                                +19% from last month
-                            </p> */}
                         </CardContent>
                     </Card>
                     <Card className="bg-red-300 text-red-950">
@@ -67,9 +61,6 @@ export function OverViewCards() {
                         </CardHeader>
                         <CardContent>
                             <div className='text-2xl font-bold'>{formatCurrency(data.customerBalance)}</div>
-                            {/* <p className='text-muted-foreground text-xs'>
-                        +201 since last hour
-                    </p> */}
                         </CardContent>
                     </Card>
                 </div>
