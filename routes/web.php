@@ -69,18 +69,12 @@ Route::post('/api/application-update', [UpgradeController::class, 'applicationUp
 Route::post('/api/application-update-v2', [UpgradeController::class, 'applicationUpdateV2']);
 
 // Automated Backup Endpoint for external schedulers
-// http://localhost:8000/automation/backup/run?token=[xxxxxxxxxxxxxxxxxxxx] | token is defined in .env as INFOSHOP_TOKEN
 Route::match(['get', 'post'], '/automation/backup/run', [BackupController::class, 'automation'])
     ->middleware('throttle:5,1')
     ->name('automation.backup');
 
-// Unified Sync API endpoints for offline-first InfoPOS app are now defined in /api.php
-
 // Mobile Sales API - For hybrid loading (Firebase + Laravel)
 Route::post('/api/sales/exclude', [SaleController::class, 'getSalesExcluding'])->name('sales.exclude');
-
-// Store config endpoint
-// Route::get('/api/stores/{storeId}', [SyncController::class, 'getStoreConfig']);
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -119,11 +113,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/api/products/{product_id}/batches', [ProductController::class, 'getBatches'])->name('products.getBatches');
 
     Route::get('/pos', [POSController::class, 'index'])->name('pos.index');
-    // Standalone POS-Offline (React SPA)
     Route::get('/pos-offline', function () {
         return view('pos-offline');
     })->name('pos.offline.standalone');
-    // Old Inertia POS-Offline (keep for reference, can be removed later)
     Route::get('/pos-offline-inertia', [POSController::class, 'offlineIndex'])->name('pos.offline.inertia');
     Route::get('/pos/{sale_id}/return', [POSController::class, 'returnIndex'])->name('pos.return');
     Route::post('/pos/checkout', [POSController::class, 'checkout'])->name('pos.checkout');
@@ -152,11 +144,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/customer-transaction', [TransactionController::class, 'storeCustomerTransaction']);
     Route::post('/vendor-transaction', [TransactionController::class, 'storeVendorTransaction']);
-    Route::get('/payments/{type}', [TransactionController::class, 'viewPayments']); //It will be purchases or sales
-
-    Route::post('/getpayments/{type}', [TransactionController::class, 'findPayments']); //It will be purchases or sales
-    Route::post('/delete-payment/{type}', [TransactionController::class, 'deletePayment']); //It will be purchases or sales
-    Route::post('/getorderdetails/{type}', [ReportController::class, 'viewOrderDetails']); //It will be purchases or sales
+    Route::get('/payments/{type}', [TransactionController::class, 'viewPayments']);
+    Route::post('/getpayments/{type}', [TransactionController::class, 'findPayments']);
+    Route::post('/delete-payment/{type}', [TransactionController::class, 'deletePayment']);
+    Route::post('/getorderdetails/{type}', [ReportController::class, 'viewOrderDetails']);
 
     Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
     Route::post('/settings-update', [SettingController::class, 'update'])->name('settings.update');
@@ -205,7 +196,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/user/{id}', [UserController::class, 'update'])->name('user.update');
     Route::post('/users/{id}/deactivate', [UserController::class, 'userDeactivate'])->name('user.deactivate');
 
-    // Route::get('reports/daily',[ReportController::class, 'getDailyReport'])->name('reports.daily');
     Route::get('reports/dailycash', [ReportController::class, 'getDailyCashReport'])->name('reports.dailycash');
     Route::post('reports/dailycash', [ReportController::class, 'storeDailyCashReport'])->name('reports.store.dailycash');
     Route::get('reports/sales', [ReportController::class, 'getSalesReport'])->name('reports.sales');
@@ -223,13 +213,13 @@ Route::middleware(['auth'])->group(function () {
         return 'Linked with storage';
     });
 
-    // Maintenance 
+    // Maintenance
     Route::get('/maintenance', [UpgradeController::class, 'showMaintenance'])->name('maintenance.index');
     Route::post('/upload-v2', [UpgradeController::class, 'handleUploadV2'])->name('maintenance.upload');
-Route::get('/update', [UpgradeController::class, 'showUploadForm'])->name('upload.form');
+    Route::get('/update', [UpgradeController::class, 'showUploadForm'])->name('upload.form');
     Route::post('/upload', [UpgradeController::class, 'handleUpload'])->name('upload.handle');
-    
-    // Database Management 
+
+    // Database Management
     Route::get('/api/maintenance/database/tables', [UpgradeController::class, 'getDatabaseTables']);
     Route::get('/api/maintenance/database/migrations', [UpgradeController::class, 'getMigrationStatus']);
     Route::post('/api/maintenance/database/migrate', [UpgradeController::class, 'runMigrations']);
@@ -268,7 +258,6 @@ Route::get('/update', [UpgradeController::class, 'showUploadForm'])->name('uploa
         Artisan::call('view:clear');
         Artisan::call('event:clear');
         Artisan::call('optimize:clear');
-
         return 'All caches cleared and configurations updated!';
     });
 
@@ -289,6 +278,12 @@ Route::get('/update', [UpgradeController::class, 'showUploadForm'])->name('uploa
         });
         return 'Mail sent';
     });
+});
+
+// ⚠️ TEMPORARY: Remove this route after seeding is complete
+Route::get('/run-seed-xyz', function () {
+    Artisan::call('db:seed', ['--force' => true]);
+    return '<pre>' . Artisan::output() . '</pre>';
 });
 
 require __DIR__ . '/auth.php';
