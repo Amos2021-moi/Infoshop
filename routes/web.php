@@ -292,4 +292,12 @@ Route::get('/reset-pass-xyz', function () {
     $user->save();
     return 'Password reset to: superadmin123';
 });
+
+Route::get('/run-settings-seed', function () {
+    Artisan::call('db:seed', [
+        '--class' => 'SettingSeeder',
+        '--force' => true,
+    ]);
+    return '<pre>' . Artisan::output() . '</pre>';
+});
 require __DIR__ . '/auth.php';
