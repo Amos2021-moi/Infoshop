@@ -82,7 +82,7 @@ class POSController extends Controller
             'pb.id',
             'product_stocks.quantity',
             'products.product_type',
-            'products.meta_data',
+            DB::raw('CAST(products.meta_data AS text)'),
             'products.alert_quantity',
             'pb.discount',
             'pb.discount_percentage'
@@ -327,7 +327,7 @@ class POSController extends Controller
                 'si.batch_id',
                 'si.quantity',
                 'products.product_type',
-                'products.meta_data'
+                DB::raw('CAST(products.meta_data AS text)')
             )
             ->get();
 
